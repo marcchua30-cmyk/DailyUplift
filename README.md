@@ -1,277 +1,98 @@
 # Quote Generator App 🌟
 
-An AI-powered quote generator that creates personalized, uplifting quotes based on how you're feeling. Built with Next.js 14, React, TypeScript, Tailwind CSS, and Hugging Face AI (100% FREE!).
+A beautiful AI-powered quote generator that creates personalized, uplifting quotes based on exactly how you're feeling. Uses Groq's FREE AI API with smart fallback to curated quotes.
 
 ![Quote Generator](https://img.shields.io/badge/Next.js-14-black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38bdf8)
-![FREE](https://img.shields.io/badge/API-FREE-green)
+![FREE API](https://img.shields.io/badge/Groq-FREE-green)
 
 ## Features ✨
 
-- **Personalized Quotes**: AI generates unique quotes based on your emotional state
-- **100% FREE**: Uses Hugging Face's free Inference API
+- **AI-Generated Quotes**: Custom quotes generated specifically for your feeling
+- **FREE API**: Groq AI with generous free tier (no credit card!)
+- **Smart Fallback**: 50+ curated quotes if API is unavailable
+- **Fast**: Responses in under 1 second
 - **Beautiful UI**: Gradient backgrounds and smooth animations
-- **Instant Generation**: Get uplifting quotes in seconds
 - **Responsive Design**: Works perfectly on desktop and mobile
-- **Type-Safe**: Built with TypeScript for better development experience
 
-## Tech Stack 🛠️
+## 🚀 Quick Start
 
-- **Framework**: Next.js 14 (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **AI**: Hugging Face Inference API (Mistral-7B-Instruct - FREE!)
-- **Icons**: Lucide React
+### 1. Get FREE Groq API Key
 
-## Getting Started 🚀
+1. Go to https://console.groq.com
+2. Sign up (free, no credit card)
+3. Create API Key
+4. Copy the key (starts with `gsk_...`)
 
-### Prerequisites
+See detailed instructions in **GROQ_SETUP.md**
 
-- Node.js 18+ installed
-- A **FREE** Hugging Face account and API token
-
-### Get Your FREE Hugging Face API Token
-
-1. **Create a Hugging Face account**: Go to https://huggingface.co/join
-2. **Go to Settings**: https://huggingface.co/settings/tokens
-3. **Create a new token**: 
-   - Click "New token"
-   - Name it "quote-generator"
-   - Role: "Read"
-   - Click "Generate"
-4. **Copy your token**: It starts with `hf_...`
-
-**🎉 It's 100% FREE - no credit card required!**
-
-### Local Development
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/quote-generator-app.git
-   cd quote-generator-app
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Set up environment variables**
-   
-   Create a `.env.local` file in the root directory:
-   ```bash
-   cp .env.example .env.local
-   ```
-   
-   Add your Hugging Face API token to `.env.local`:
-   ```
-   HUGGINGFACE_API_KEY=hf_your_actual_token_here
-   ```
-
-4. **Run the development server**
-   ```bash
-   npm run dev
-   ```
-
-5. **Open your browser**
-   
-   Navigate to [http://localhost:3000](http://localhost:3000)
-
-## Deployment to Vercel 🚀
-
-### Quick Deploy
-
-The easiest way to deploy is using the Vercel Platform:
-
-1. **Push to GitHub**
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial commit"
-   git branch -M main
-   git remote add origin https://github.com/yourusername/quote-generator-app.git
-   git push -u origin main
-   ```
-
-2. **Deploy to Vercel**
-   
-   - Go to [vercel.com](https://vercel.com)
-   - Sign in with GitHub
-   - Click "Add New Project"
-   - Import your repository
-   - Configure the project:
-     - Framework Preset: **Next.js**
-     - Root Directory: `./`
-     - Build Command: `npm run build`
-     - Output Directory: `.next`
-
-3. **Add Environment Variables**
-   
-   In the Vercel project settings:
-   - Go to "Settings" → "Environment Variables"
-   - Add `HUGGINGFACE_API_KEY` with your token (starts with `hf_...`)
-   - Click "Save"
-
-4. **Deploy**
-   
-   Click "Deploy" and wait for the build to complete!
-
-### Alternative: Vercel CLI
+### 2. Local Development
 
 ```bash
-# Install Vercel CLI
-npm i -g vercel
+git clone https://github.com/yourusername/quote-generator-app.git
+cd quote-generator-app
+npm install
 
-# Login to Vercel
-vercel login
+# Add your Groq API key
+echo "GROQ_API_KEY=gsk_your_key_here" > .env.local
 
-# Deploy
-vercel
-
-# Add environment variable
-vercel env add HUGGINGFACE_API_KEY
-
-# Deploy to production
-vercel --prod
+npm run dev
 ```
 
-## Environment Variables 🔐
+Open http://localhost:3000
 
-| Variable | Description | Required | Cost |
-|----------|-------------|----------|------|
-| `HUGGINGFACE_API_KEY` | Your Hugging Face API token for AI generation | Yes | **FREE** |
+### 3. Deploy to Vercel
 
-**Important**: Never commit your `.env.local` file or expose your API key publicly!
-
-## Project Structure 📁
-
-```
-quote-generator-app/
-├── app/
-│   ├── api/
-│   │   └── generate-quote/
-│   │       └── route.ts          # API endpoint for quote generation
-│   ├── globals.css               # Global styles
-│   ├── layout.tsx                # Root layout
-│   └── page.tsx                  # Main page component
-├── public/                       # Static assets
-├── .env.example                  # Environment variables template
-├── .gitignore                    # Git ignore rules
-├── next.config.mjs              # Next.js configuration
-├── package.json                  # Dependencies
-├── tailwind.config.js           # Tailwind configuration
-└── tsconfig.json                # TypeScript configuration
-```
+1. Push to GitHub
+2. Import to Vercel
+3. Add environment variable: `GROQ_API_KEY` = your key
+4. Deploy!
 
 ## How It Works 🧠
 
-1. User inputs how they're feeling
-2. Frontend sends the feeling to the API route
-3. API route calls Hugging Face AI (Mistral-7B-Instruct) with the user's input
-4. AI generates a personalized, uplifting quote
-5. Quote is displayed with beautiful animations
+1. **You input**: "feeling anxious about my job interview"
+2. **Groq AI generates**: A custom, encouraging quote specifically for that feeling
+3. **You get**: Personalized support in seconds
+4. **Fallback**: If API is down, uses smart curated quotes
 
-## API Usage 📊
+## API Details 🔌
 
-The app uses **Mistral-7B-Instruct** via Hugging Face's free Inference API.
+- **API**: Groq (llama-3.1-8b-instant model)
+- **Cost**: FREE (30 req/min, 14,400/day)
+- **Speed**: ~500ms response time
+- **Fallback**: 50+ curated quotes organized by emotion
 
-**🎉 100% FREE:**
-- **No credit card required**
-- **No usage limits** on free tier (rate-limited but sufficient for personal use)
-- **No costs** - completely free forever!
+## Examples 💬
 
-**Rate Limits (Free Tier):**
-- ~1 request per second
-- If model is loading, it may take 10-20 seconds on first request
-- After that, quotes generate instantly
+**Input**: "stressed about deadlines"
+**Output**: "Remember, progress over perfection. Each small step forward is a victory worth celebrating."
+
+**Input**: "excited about my new job"  
+**Output**: "Your enthusiasm is your superpower! Channel that energy and watch yourself soar."
+
+**Input**: "tired and overwhelmed"
+**Output**: "Rest isn't giving up—it's giving yourself what you need to continue. Be gentle with yourself."
 
 ## Customization 🎨
 
-### Change AI Model
+Add more quotes in `app/api/generate-quote/route.ts`:
 
-Edit `app/api/generate-quote/route.ts` and change the model URL:
 ```typescript
-// Current: Mistral-7B-Instruct (recommended, free)
-'https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2'
-
-// Other free options:
-// 'https://api-inference.huggingface.co/models/meta-llama/Llama-2-7b-chat-hf'
-// 'https://api-inference.huggingface.co/models/google/flan-t5-large'
+const yourQuotes = [
+  "Add your quote here!",
+];
 ```
-
-Browse more models at: https://huggingface.co/models?pipeline_tag=text-generation
-
-### Modify Styling
-
-Edit Tailwind classes in `app/page.tsx` or customize `tailwind.config.js`.
-
-### Adjust Quote Prompt
-
-Modify the prompt in `app/api/generate-quote/route.ts` to change quote style.
 
 ## Troubleshooting 🔧
 
-### "npm run build" exited with 1 error
+**Build fails?**
+- Go to Vercel → Deployments → ⋯ → Redeploy
+- Uncheck "Use existing Build Cache"
+- Redeploy
 
-If you encounter this error, try these steps:
-
-1. **Delete node_modules and reinstall**
-   ```bash
-   rm -rf node_modules package-lock.json
-   npm install
-   npm run build
-   ```
-
-2. **Check Node.js version**
-   ```bash
-   node --version  # Should be 18.x or higher
-   ```
-   If not, install Node.js 18+ from [nodejs.org](https://nodejs.org)
-
-3. **Verify environment variables**
-   - Make sure `.env.local` exists with `HUGGINGFACE_API_KEY`
-   - For Vercel, ensure the environment variable is set in the dashboard
-
-4. **Check for TypeScript errors**
-   ```bash
-   npm run lint
-   ```
-
-5. **Clear Next.js cache**
-   ```bash
-   rm -rf .next
-   npm run build
-   ```
-
-### "API key not configured" error
-- Make sure `.env.local` exists with your Hugging Face token
-- Your token should start with `hf_`
-- Get a FREE token at https://huggingface.co/settings/tokens
-- Restart the development server after adding environment variables
-
-### Build fails on Vercel
-- Verify `HUGGINGFACE_API_KEY` is set in Vercel dashboard
-- Check build logs for specific errors
-
-### Quotes not generating
-- Verify your Hugging Face token is valid (starts with `hf_`)
-- Check browser console for errors
-- If you see "Model is loading", wait 10-20 seconds and try again (cold start)
-- After first load, quotes will generate instantly
-
-## Contributing 🤝
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License 📄
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## Support 💬
-
-If you have any questions or run into issues, please open an issue on GitHub.
+See BUILD_TROUBLESHOOTING.md for more help.
 
 ---
 
-Made with ❤️ using Hugging Face AI (100% FREE!)
+Built with ❤️ • No APIs Required • 100% Free Forever
