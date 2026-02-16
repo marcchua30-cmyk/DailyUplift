@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
 
     // Using the new Hugging Face router endpoint with a free model
     const response = await fetch(
-      'https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta',
+      'https://router.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta',
       {
         method: 'POST',
         headers: {
