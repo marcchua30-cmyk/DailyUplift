@@ -185,6 +185,38 @@ Modify the prompt in `app/api/generate-quote/route.ts` to change quote style.
 
 ## Troubleshooting 🔧
 
+### "npm run build" exited with 1 error
+
+If you encounter this error, try these steps:
+
+1. **Delete node_modules and reinstall**
+   ```bash
+   rm -rf node_modules package-lock.json
+   npm install
+   npm run build
+   ```
+
+2. **Check Node.js version**
+   ```bash
+   node --version  # Should be 18.x or higher
+   ```
+   If not, install Node.js 18+ from [nodejs.org](https://nodejs.org)
+
+3. **Verify environment variables**
+   - Make sure `.env.local` exists with `ANTHROPIC_API_KEY`
+   - For Vercel, ensure the environment variable is set in the dashboard
+
+4. **Check for TypeScript errors**
+   ```bash
+   npm run lint
+   ```
+
+5. **Clear Next.js cache**
+   ```bash
+   rm -rf .next
+   npm run build
+   ```
+
 ### "API key not configured" error
 - Make sure `.env.local` exists with your API key
 - Restart the development server after adding environment variables
