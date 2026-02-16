@@ -23,9 +23,9 @@ export async function POST(request: NextRequest) {
 
     console.log('Making request to Hugging Face...');
 
-    // Using the new Hugging Face router endpoint with a free model
+    // Using GPT-2 - always free and available on Hugging Face
     const response = await fetch(
-      'https://router.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta',
+      'https://api-inference.huggingface.co/models/gpt2',
       {
         method: 'POST',
         headers: {
@@ -33,13 +33,11 @@ export async function POST(request: NextRequest) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          inputs: `<|system|>You are a compassionate quote generator.</|>
-<|user|>Create one short, uplifting quote for someone feeling: ${feeling}. Write only the quote itself, no explanations.</|>
-<|assistant|>`,
+          inputs: `Here is an uplifting quote for someone feeling ${feeling}: "`,
           parameters: {
-            max_new_tokens: 100,
-            temperature: 0.8,
-            top_p: 0.9,
+            max_new_tokens: 60,
+            temperature: 0.9,
+            top_p: 0.95,
             return_full_text: false,
           },
         }),
@@ -53,13 +51,20 @@ export async function POST(request: NextRequest) {
     if (data && data[0] && data[0].generated_text) {
       let quote = data[0].generated_text.trim();
       
-      // Clean up the response - remove any instruction repetition
-      quote = quote.replace(/Create a.*quote.*feeling:.*\./gi, '').trim();
-      quote = quote.replace(/^["']|["']$/g, '').trim(); // Remove surrounding quotes if any
+      // Clean up the response
+      // Remove quotes if they exist
+      quote = quote.replace(/^["']|["']$/g, '');
+      // Get only the first sentence or up to closing quote
+      const endQuote = quote.indexOf('"');
+      if (endQuote > 10) {
+        quote = quote.substring(0, endQuote);
+      }
+      // Clean up any remaining artifacts
+      quote = quote.split('\n')[0].trim();
       
-      // If quote is too short or empty, provide a fallback
-      if (quote.length < 10) {
-        console.log('Quote too short, using fallback');
+      // If quote is too short, empty, or doesn't make sense, provide a fallback
+      if (quote.length < 15 || quote.length > 200) {
+        console.log('Quote not suitable, using fallback');
         quote = generateFallbackQuote(feeling);
       }
       
@@ -96,22 +101,61 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     console.error('Error generating quote:', error);
-    return NextResponse.json(
-      { error: `Failed to generate quote: ${error instanceof Error ? error.message : 'Unknown error'}` },
-      { status: 500 }
-    );
+    // If API fails completely, just use a curated quote
+    const quote = generateFallbackQuote(feeling);
+    return NextResponse.json({ quote });
   }
 }
 
 // Fallback quotes in case the model response is poor
 function generateFallbackQuote(feeling: string): string {
-  const fallbacks = [
+  const feelingLower = feeling.toLowerCase();
+  
+  // Categorize feelings and provide relevant quotes
+  if (feelingLower.includes('anxious') || feelingLower.includes('worried') || feelingLower.includes('nervous')) {
+    const anxiousQuotes = [
+      "Worrying does not take away tomorrow's troubles. It takes away today's peace.",
+      "You've survived 100% of your bad days. You're doing great.",
+      "Anxiety is a thin stream of fear trickling through the mind. Change the channel to courage.",
+    ];
+    return anxiousQuotes[Math.floor(Math.random() * anxiousQuotes.length)];
+  }
+  
+  if (feelingLower.includes('sad') || feelingLower.includes('down') || feelingLower.includes('depressed')) {
+    const sadQuotes = [
+      "Even the darkest night will end and the sun will rise.",
+      "Your feelings are valid. It's okay to not be okay sometimes.",
+      "This too shall pass. Be patient with yourself.",
+    ];
+    return sadQuotes[Math.floor(Math.random() * sadQuotes.length)];
+  }
+  
+  if (feelingLower.includes('tired') || feelingLower.includes('exhausted') || feelingLower.includes('overwhelmed')) {
+    const tiredQuotes = [
+      "Rest is not idleness. Taking time to recharge is essential for your wellbeing.",
+      "You don't have to see the whole staircase. Just take the first step.",
+      "Be gentle with yourself. You're doing the best you can.",
+    ];
+    return tiredQuotes[Math.floor(Math.random() * tiredQuotes.length)];
+  }
+  
+  if (feelingLower.includes('stressed') || feelingLower.includes('pressure')) {
+    const stressedQuotes = [
+      "You are braver than you believe, stronger than you seem, and smarter than you think.",
+      "It's okay to take things one day at a time. Progress, not perfection.",
+      "You've weathered many storms before. This too is temporary.",
+    ];
+    return stressedQuotes[Math.floor(Math.random() * stressedQuotes.length)];
+  }
+  
+  // General uplifting quotes for any feeling
+  const generalQuotes = [
     "Every storm runs out of rain. This feeling will pass, and you'll emerge stronger.",
-    "Your feelings are valid, and it's okay to not be okay. Tomorrow is a new opportunity.",
     "In the midst of difficulty lies opportunity. You're more resilient than you know.",
-    "Be gentle with yourself. You're doing the best you can with what you have right now.",
     "This moment doesn't define you. Your strength lies in continuing despite how you feel.",
+    "The only way out is through. Keep going, you've got this.",
+    "Your current situation is not your final destination. Better days are coming.",
   ];
   
-  return fallbacks[Math.floor(Math.random() * fallbacks.length)];
+  return generalQuotes[Math.floor(Math.random() * generalQuotes.length)];
 }
