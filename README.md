@@ -1,14 +1,16 @@
 # Quote Generator App 🌟
 
-An AI-powered quote generator that creates personalized, uplifting quotes based on how you're feeling. Built with Next.js 14, React, TypeScript, Tailwind CSS, and Claude AI.
+An AI-powered quote generator that creates personalized, uplifting quotes based on how you're feeling. Built with Next.js 14, React, TypeScript, Tailwind CSS, and Hugging Face AI (100% FREE!).
 
 ![Quote Generator](https://img.shields.io/badge/Next.js-14-black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38bdf8)
+![FREE](https://img.shields.io/badge/API-FREE-green)
 
 ## Features ✨
 
 - **Personalized Quotes**: AI generates unique quotes based on your emotional state
+- **100% FREE**: Uses Hugging Face's free Inference API
 - **Beautiful UI**: Gradient backgrounds and smooth animations
 - **Instant Generation**: Get uplifting quotes in seconds
 - **Responsive Design**: Works perfectly on desktop and mobile
@@ -19,7 +21,7 @@ An AI-powered quote generator that creates personalized, uplifting quotes based 
 - **Framework**: Next.js 14 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
-- **AI**: Claude API (Anthropic)
+- **AI**: Hugging Face Inference API (Mistral-7B-Instruct - FREE!)
 - **Icons**: Lucide React
 
 ## Getting Started 🚀
@@ -27,7 +29,20 @@ An AI-powered quote generator that creates personalized, uplifting quotes based 
 ### Prerequisites
 
 - Node.js 18+ installed
-- An Anthropic API key ([Get one here](https://console.anthropic.com/))
+- A **FREE** Hugging Face account and API token
+
+### Get Your FREE Hugging Face API Token
+
+1. **Create a Hugging Face account**: Go to https://huggingface.co/join
+2. **Go to Settings**: https://huggingface.co/settings/tokens
+3. **Create a new token**: 
+   - Click "New token"
+   - Name it "quote-generator"
+   - Role: "Read"
+   - Click "Generate"
+4. **Copy your token**: It starts with `hf_...`
+
+**🎉 It's 100% FREE - no credit card required!**
 
 ### Local Development
 
@@ -49,9 +64,9 @@ An AI-powered quote generator that creates personalized, uplifting quotes based 
    cp .env.example .env.local
    ```
    
-   Add your Anthropic API key to `.env.local`:
+   Add your Hugging Face API token to `.env.local`:
    ```
-   ANTHROPIC_API_KEY=your_actual_api_key_here
+   HUGGINGFACE_API_KEY=hf_your_actual_token_here
    ```
 
 4. **Run the development server**
@@ -95,7 +110,7 @@ The easiest way to deploy is using the Vercel Platform:
    
    In the Vercel project settings:
    - Go to "Settings" → "Environment Variables"
-   - Add `ANTHROPIC_API_KEY` with your API key
+   - Add `HUGGINGFACE_API_KEY` with your token (starts with `hf_...`)
    - Click "Save"
 
 4. **Deploy**
@@ -115,7 +130,7 @@ vercel login
 vercel
 
 # Add environment variable
-vercel env add ANTHROPIC_API_KEY
+vercel env add HUGGINGFACE_API_KEY
 
 # Deploy to production
 vercel --prod
@@ -123,9 +138,9 @@ vercel --prod
 
 ## Environment Variables 🔐
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `ANTHROPIC_API_KEY` | Your Anthropic API key for Claude | Yes |
+| Variable | Description | Required | Cost |
+|----------|-------------|----------|------|
+| `HUGGINGFACE_API_KEY` | Your Hugging Face API token for AI generation | Yes | **FREE** |
 
 **Important**: Never commit your `.env.local` file or expose your API key publicly!
 
@@ -153,27 +168,39 @@ quote-generator-app/
 
 1. User inputs how they're feeling
 2. Frontend sends the feeling to the API route
-3. API route calls Claude AI with the user's input
-4. Claude generates a personalized, uplifting quote
+3. API route calls Hugging Face AI (Mistral-7B-Instruct) with the user's input
+4. AI generates a personalized, uplifting quote
 5. Quote is displayed with beautiful animations
 
 ## API Usage 📊
 
-The app uses Claude Sonnet 4 via the Anthropic API. Each quote generation makes one API call.
+The app uses **Mistral-7B-Instruct** via Hugging Face's free Inference API.
 
-**Estimated costs**:
-- Input: ~50 tokens per request
-- Output: ~50-100 tokens per request
-- Cost: ~$0.001-0.002 per quote
+**🎉 100% FREE:**
+- **No credit card required**
+- **No usage limits** on free tier (rate-limited but sufficient for personal use)
+- **No costs** - completely free forever!
+
+**Rate Limits (Free Tier):**
+- ~1 request per second
+- If model is loading, it may take 10-20 seconds on first request
+- After that, quotes generate instantly
 
 ## Customization 🎨
 
 ### Change AI Model
 
-Edit `app/api/generate-quote/route.ts`:
+Edit `app/api/generate-quote/route.ts` and change the model URL:
 ```typescript
-model: 'claude-sonnet-4-20250514', // Change to another Claude model
+// Current: Mistral-7B-Instruct (recommended, free)
+'https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2'
+
+// Other free options:
+// 'https://api-inference.huggingface.co/models/meta-llama/Llama-2-7b-chat-hf'
+// 'https://api-inference.huggingface.co/models/google/flan-t5-large'
 ```
+
+Browse more models at: https://huggingface.co/models?pipeline_tag=text-generation
 
 ### Modify Styling
 
@@ -203,7 +230,7 @@ If you encounter this error, try these steps:
    If not, install Node.js 18+ from [nodejs.org](https://nodejs.org)
 
 3. **Verify environment variables**
-   - Make sure `.env.local` exists with `ANTHROPIC_API_KEY`
+   - Make sure `.env.local` exists with `HUGGINGFACE_API_KEY`
    - For Vercel, ensure the environment variable is set in the dashboard
 
 4. **Check for TypeScript errors**
@@ -218,17 +245,20 @@ If you encounter this error, try these steps:
    ```
 
 ### "API key not configured" error
-- Make sure `.env.local` exists with your API key
+- Make sure `.env.local` exists with your Hugging Face token
+- Your token should start with `hf_`
+- Get a FREE token at https://huggingface.co/settings/tokens
 - Restart the development server after adding environment variables
 
 ### Build fails on Vercel
-- Verify all environment variables are set in Vercel dashboard
+- Verify `HUGGINGFACE_API_KEY` is set in Vercel dashboard
 - Check build logs for specific errors
 
 ### Quotes not generating
-- Verify your Anthropic API key is valid
+- Verify your Hugging Face token is valid (starts with `hf_`)
 - Check browser console for errors
-- Ensure you have API credits available
+- If you see "Model is loading", wait 10-20 seconds and try again (cold start)
+- After first load, quotes will generate instantly
 
 ## Contributing 🤝
 
@@ -244,4 +274,4 @@ If you have any questions or run into issues, please open an issue on GitHub.
 
 ---
 
-Made with ❤️ using Claude AI
+Made with ❤️ using Hugging Face AI (100% FREE!)
