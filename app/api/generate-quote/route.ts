@@ -14,11 +14,14 @@ export async function POST(request: NextRequest) {
     const apiKey = process.env.HUGGINGFACE_API_KEY;
 
     if (!apiKey) {
+      console.error('HUGGINGFACE_API_KEY is not set');
       return NextResponse.json(
         { error: 'API key not configured. Get a free key at https://huggingface.co/settings/tokens' },
         { status: 500 }
       );
     }
+
+    console.log('Making request to Hugging Face...');
 
     // Using Mistral-7B-Instruct model (free on Hugging Face)
     const response = await fetch(
@@ -42,6 +45,7 @@ export async function POST(request: NextRequest) {
     );
 
     const data = await response.json();
+    console.log('Hugging Face response:', JSON.stringify(data).substring(0, 200));
 
     // Handle Hugging Face response format
     if (data && data[0] && data[0].generated_text) {
@@ -53,33 +57,45 @@ export async function POST(request: NextRequest) {
       
       // If quote is too short or empty, provide a fallback
       if (quote.length < 10) {
+        console.log('Quote too short, using fallback');
         quote = generateFallbackQuote(feeling);
       }
       
       return NextResponse.json({ quote });
     } else if (data.error) {
+      console.error('Hugging Face API error:', data.error);
+      
       // Model might be loading
-      if (data.error.includes('loading')) {
+      if (data.error.includes('loading') || data.error.includes('currently loading')) {
         return NextResponse.json(
-          { error: 'AI model is loading. Please try again in a few seconds.' },
+          { error: 'AI model is waking up (this takes 20 seconds on first use). Please try again in a moment!' },
           { status: 503 }
         );
       }
-      console.error('Hugging Face error:', data.error);
+      
+      // Rate limit
+      if (data.error.includes('rate limit')) {
+        return NextResponse.json(
+          { error: 'Too many requests. Please wait a moment and try again.' },
+          { status: 429 }
+        );
+      }
+      
       return NextResponse.json(
-        { error: 'Unable to generate quote. Please try again.' },
+        { error: `API Error: ${data.error}` },
         { status: 500 }
       );
     } else {
+      console.error('Unexpected response format:', data);
       return NextResponse.json(
-        { error: 'Unable to generate quote' },
+        { error: 'Unable to generate quote. The AI might be starting up - please try again in 20 seconds.' },
         { status: 500 }
       );
     }
   } catch (error) {
     console.error('Error generating quote:', error);
     return NextResponse.json(
-      { error: 'Failed to generate quote' },
+      { error: `Failed to generate quote: ${error instanceof Error ? error.message : 'Unknown error'}` },
       { status: 500 }
     );
   }
