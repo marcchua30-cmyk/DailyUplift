@@ -105,7 +105,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error generating quote:', error);
     // If API fails completely, just use a curated quote
-    const quote = generateFallbackQuote(feeling);
+    const quote = generateFallbackQuote(feeling || 'uncertain');
     return NextResponse.json({ quote });
   }
 }
