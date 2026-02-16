@@ -23,9 +23,9 @@ export async function POST(request: NextRequest) {
 
     console.log('Making request to Hugging Face...');
 
-    // Using Mistral-7B-Instruct model (free on Hugging Face)
+    // Using the new Hugging Face router endpoint with a free model
     const response = await fetch(
-      'https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2',
+      'https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta',
       {
         method: 'POST',
         headers: {
@@ -33,7 +33,9 @@ export async function POST(request: NextRequest) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          inputs: `Create a short, uplifting quote for someone feeling: ${feeling}. The quote should be warm, encouraging, and help them feel better. Only write the quote itself with no explanations or preamble.`,
+          inputs: `<|system|>You are a compassionate quote generator.</|>
+<|user|>Create one short, uplifting quote for someone feeling: ${feeling}. Write only the quote itself, no explanations.</|>
+<|assistant|>`,
           parameters: {
             max_new_tokens: 100,
             temperature: 0.8,
