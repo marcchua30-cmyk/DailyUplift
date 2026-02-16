@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
+  let feeling: string = '';
+  
   try {
-    const { feeling } = await request.json();
+    const body = await request.json();
+    feeling = body.feeling || '';
 
     if (!feeling || !feeling.trim()) {
       return NextResponse.json(
